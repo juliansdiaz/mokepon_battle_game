@@ -1,0 +1,24 @@
+.mokepon_title {
+    color: hotpink;
+    width: 310px;
+    height: 50px;
+    background-color: teal;
+}
+
+label {
+    background-color: tomato;
+    width: 310px;
+    height: 50px;
+}
+
+input {
+    background-color: cadetblue;
+    width: 310px;
+    height: 50px;
+}
+
+button {
+    background-color: aqua;
+    width: 310px;
+    height: 50px;
+}
