@@ -1,24 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Cal Sans", sans-serif;
+  background-color: #041562;
+}
+
+#select-pet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .mokepon_title {
-    color: hotpink;
-    width: 310px;
-    height: 50px;
-    background-color: teal;
+  color: white;
+  font-size: 32px;
+  margin: 20px;
 }
 
-label {
-    background-color: tomato;
-    width: 310px;
-    height: 50px;
+.mokepon_subtitle {
+  margin: 20px;
+  color: white;
+  font-size: 20px;
 }
 
-input {
-    background-color: cadetblue;
-    width: 310px;
-    height: 50px;
+.cards-container {
+  display: flex;
+  gap: 10px;
 }
 
-button {
-    background-color: aqua;
-    width: 310px;
-    height: 50px;
+.mokepon-card {
+  width: 180px;
+  height: 100px;
+  background: #114685;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 20px;
+  display: flex;
+  color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.mokepon-card img {
+  width: 80px;
+}
+
+#select-button {
+  color: white;
+  background-color: hotpink;
+  width: 100px;
+  height: 30px;
+  padding: 5px;
+  margin: 20px;
+  border: 2px solid aquamarine;
+  border-radius: 5px;
 }
