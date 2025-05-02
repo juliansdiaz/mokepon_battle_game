@@ -1,8 +1,8 @@
+/*General Styles*/
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
 * {
-  padding: 0;
-  margin: 0;
   box-sizing: border-box;
 }
 
@@ -10,6 +10,8 @@ body {
   font-family: "Cal Sans", sans-serif;
   background-color: #041562;
 }
+
+/*Select Pet Screen*/
 
 #select-pet {
   display: flex;
@@ -38,7 +40,7 @@ body {
 .mokepon-card {
   width: 180px;
   height: 100px;
-  background: #114685;
+  background: #11468f;
   padding: 10px;
   margin: 10px;
   border-radius: 20px;
@@ -54,11 +56,29 @@ body {
 
 #select-button {
   color: white;
-  background-color: hotpink;
-  width: 100px;
-  height: 30px;
+  background: transparent;
+  font-family: "Quicksand", sans-serif;
+  width: 180px;
+  height: 40px;
   padding: 5px;
-  margin: 20px;
-  border: 2px solid aquamarine;
-  border-radius: 5px;
+  margin-top: 30px;
+  border: 2px solid white;
+  border-radius: 10px;
+}
+
+/*Combat Screen*/
+#select-attack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.attack-button {
+  background-color: #11468f;
+  padding: 10px;
+  border-radius: 20px;
+  border-color: transparent;
+  width: 100px;
+  color: white;
+  font-family: "Quicksand", sans-serif;
 }

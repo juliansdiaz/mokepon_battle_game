@@ -28,7 +28,7 @@ function StartGame() {
 
 function SelectPlayerPet() {
   let selectAttackSection = document.getElementById("select-attack");
-  selectAttackSection.style.display = "block";
+  selectAttackSection.style.display = "flex";
 
   let selectPetSection = document.getElementById("select-pet");
   selectPetSection.style.display = "none";
