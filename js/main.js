@@ -132,29 +132,35 @@ function CheckLives() {
 }
 
 function CreateBattleMessage(battleResult) {
-  let battleMessage = document.createElement("p");
-  let messagesSection = document.getElementById("messages");
+  let messagesSection = document.getElementById("combat-result");
+  let playerAttackMessage = document.getElementById("player-attack-message");
+  let enemyAttackMessage = document.getElementById("enemy-attack-message");
 
-  battleMessage.innerHTML = "Tu mascota atacó con " + playerAttack + ", la mascota del enemigo atacó con " + enemyAttack + " - " + battleResult;
+  let newPlayerBattleMessage = document.createElement("p");
+  let newEnemyBattleMessage = document.createElement("p");
 
-  messagesSection.appendChild(battleMessage);
+  messagesSection.innerHTML = battleResult;
+  newPlayerBattleMessage.innerHTML = playerAttack;
+  newEnemyBattleMessage.innerHTML = enemyAttack;
+
+  playerAttackMessage.appendChild(newPlayerBattleMessage);
+  enemyAttackMessage.appendChild( newEnemyBattleMessage);
 }
 
 function CreateGameOverMessage(gameOverResult) {
-  let messagesSection = document.getElementById("messages");
+  let messagesSection = document.getElementById("combat-result");
 
-  let gameOverMessage = document.createElement("p");
-  gameOverMessage.innerHTML = gameOverResult;
-
-  messagesSection.appendChild(gameOverMessage);
+  messagesSection.innerHTML = gameOverResult;
 
   let fireBtn = document.getElementById("fire-attack-button");
   fireBtn.disabled = true;
 
   let waterBtn = document.getElementById("water-attack-button");
   waterBtn.disabled = true;
+
   let dirtBtn = document.getElementById("dirt-attack-button");
   dirtBtn.disabled = true
+
   let restartSection = document.getElementById("restart");
   restartSection.style.display = "block";
 }

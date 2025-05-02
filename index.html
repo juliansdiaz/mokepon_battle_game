@@ -17,23 +17,23 @@
 
     <div class="cards-container">
       <!--Pets-->
+      <input type="radio" name="pet" id="hipodoge">
       <label for="hipodoge" class="mokepon-card">
         <p>Hipodoge</p>
         <img src="./img/mokepons_mokepon_hipodoge_attack.png" alt="Hipodoge">
       </label>
-      <input type="radio" name="pet" id="hipodoge">
 
+      <input type="radio" name="pet" id="capipepo">
       <label for="capipepo" class="mokepon-card">
         <p>Capipepo</p>
         <img src="./img/mokepons_mokepon_capipepo_attack.png" alt="Capipepo">
       </label>
-      <input type="radio" name="pet" id="capipepo">
-
+     
+      <input type="radio" name="pet" id="ratigueya">
       <label for="ratigueya" class="mokepon-card">
         <p>Ratigüeya</p>
         <img src="./img/mokepons_mokepon_ratigueya_attack.png" alt="Ratigüeya">
       </label>
-      <input type="radio" name="pet" id="ratigueya">
     </div>
 
     <button id="select-button">Seleccionar</button>
@@ -44,24 +44,32 @@
 
     <h2 class="mokepon_subtitle">Elige tu ataque:</h2>
 
-    <div>
+    <div class="attack-buttons">
       <button id="fire-attack-button" class="attack-button">Fuego 🔥</button>
       <button id="water-attack-button" class="attack-button">Agua 💧</button>
       <button id="dirt-attack-button" class="attack-button">Tierra 🌱</button>
     </div>
 
-    <div>
-      <section id="messages">
-      </section>
+    <div id="messages">
+      <p id="combat-result">A Luchar!!!</p>
 
       <section id="restart">
         <button id="restart-button">Reiniciar</button>
       </section>
     </div>
 
-    <div>
-      <p>Tu mascota <span id="player-pet"></span> tiene <span id="player-lives">3</span> vidas</p>
-      <p>La mascota <span id="enemy-pet"></span> del enemigo tiene <span id="enemy-lives">3</span> vidas</p>
+    <div class="mokepon-battle-stats">
+      <div class="player-stats">
+        <span id="player-pet"></span>
+        <span id="player-lives">3</span>
+        <div id="player-attack-message"></div>
+      </div>
+
+      <div class="enemy-stats">
+        <span id="enemy-pet"></span>
+        <span id="enemy-lives">3</span> 
+        <div id="enemy-attack-message"></div>
+      </div>
     </div>
   </section>
 </body>
