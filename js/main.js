@@ -1,14 +1,8 @@
 const selectBtn = document.getElementById("select-button");
-const fireBtn = document.getElementById("fire-attack-button");
-const waterBtn = document.getElementById("water-attack-button");
-const dirtBtn = document.getElementById("dirt-attack-button");
 const restartBtn = document.getElementById("restart-button");
 const selectAttackSection = document.getElementById("select-attack");
 const restartSection = document.getElementById("restart");
 const selectPetSection = document.getElementById("select-pet");
-const hipodogeInput = document.getElementById("hipodoge");
-const capipepoInput = document.getElementById("capipepo");
-const ratigueyaInput = document.getElementById("ratigueya");
 const playerPetSpan = document.getElementById("player-pet");
 const enemyPetSpan = document.getElementById("enemy-pet");
 const playerLives = document.getElementById("player-lives");
@@ -17,11 +11,20 @@ const messagesSection = document.getElementById("combat-result");
 const playerAttackMessage = document.getElementById("player-attack-message");
 const enemyAttackMessage = document.getElementById("enemy-attack-message");
 const mokeponCardsContainer = document.getElementById("mokepon-cards");
+const mokeponAttackContainer = document.getElementById("attacks-container");
 
+let fireBtn;
+let waterBtn;
+let dirtBtn;
+let hipodogeInput;
+let capipepoInput;
+let ratigueyaInput;
 let mokepons = [];
 let playerAttack;
 let enemyAttack;
 let mokeponChoice;
+let playerPet;
+let mokeponAttacks;
 let playerLivesCount = 3;
 let enemyLivesCount = 3;
 
@@ -39,27 +42,27 @@ let capipepo = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.p
 let ratigueya = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5);
 
 hipodoge.attacks.push(
-  {attackName: "💧", attackId: "water-attack-button"},
-  {attackName: "💧", attackId: "water-attack-button"},
-  {attackName: "💧", attackId: "water-attack-button"},
-  {attackName: "🔥", attackId: "fire-attack-button"},
-  {attackName: "🌱", attackId: "dirt-attack-button"}
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" }
 );
 
 capipepo.attacks.push(
-  {attackName: "🌱", attackId: "dirt-attack-button"},
-  {attackName: "🌱", attackId: "dirt-attack-button"},
-  {attackName: "🌱", attackId: "dirt-attack-button"},
-  {attackName: "💧", attackId: "water-attack-button"},
-  {attackName: "🔥", attackId: "fire-attack-button"}
+  { attackName: "🌱", attackId: "dirt-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" }
 );
 
 ratigueya.attacks.push(
-  {attackName: "🔥", attackId: "fire-attack-button"},
-  {attackName: "🔥", attackId: "fire-attack-button"},
-  {attackName: "🔥", attackId: "fire-attack-button"},
-  {attackName: "💧", attackId: "water-attack-button"},
-  {attackName: "🌱", attackId: "dirt-attack-button"}
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" }
 );
 
 mokepons.push(hipodoge, capipepo, ratigueya);
@@ -74,12 +77,13 @@ function StartGame() {
       </label>
     `
     mokeponCardsContainer.innerHTML += mokeponChoice;
+
+    hipodogeInput = document.getElementById("Hipodoge");
+    capipepoInput = document.getElementById("Capipepo");
+    ratigueyaInput = document.getElementById("Ratigueya");
   })
 
   selectBtn.addEventListener("click", SelectPlayerPet);
-  fireBtn.addEventListener("click", FireAttack);
-  waterBtn.addEventListener("click", WaterAttack);
-  dirtBtn.addEventListener("click", DirtAttack);
   restartBtn.addEventListener("click", RestartGame);
 
   selectAttackSection.style.display = "none";
@@ -91,34 +95,30 @@ function SelectPlayerPet() {
   selectPetSection.style.display = "none";
 
   if (hipodogeInput.checked) {
-    playerPetSpan.innerHTML = "Hipodoge";
+    playerPetSpan.innerHTML = hipodogeInput.id;
+    playerPet = hipodogeInput.id;
   }
   else if (capipepoInput.checked) {
-    playerPetSpan.innerHTML = "Capipepo";
+    playerPetSpan.innerHTML = capipepoInput.id;
+    playerPet = capipepoInput.id;
   }
   else if (ratigueyaInput.checked) {
-    playerPetSpan.innerHTML = "Ratigüeya";
+    playerPetSpan.innerHTML = ratigueyaInput.id;
+    playerPet = ratigueyaInput.id;
   }
   else {
     alert("Debes seleccionar a una mascota!");
     RestartGame();
   }
 
+  PullAttacks(playerPet);
   SelectEnemyPet();
 }
 
 function SelectEnemyPet() {
-  let selectedPet = GenerateRandomNumber(1, 3);
+  let selectedPet = GenerateRandomNumber(0, mokepons.length - 1);
 
-  if (selectedPet === 1) {
-    enemyPetSpan.innerHTML = "Hipodoge";
-  }
-  else if (selectedPet === 2) {
-    enemyPetSpan.innerHTML = "Capipepo";
-  }
-  else {
-    enemyPetSpan.innerHTML = "Ratigüeya"
-  }
+  enemyPetSpan.innerHTML = mokepons[selectedPet].name;
 }
 
 function FireAttack() {
@@ -199,6 +199,33 @@ function CreateGameOverMessage(gameOverResult) {
   dirtBtn.disabled = true
 
   restartSection.style.display = "block";
+}
+
+function PullAttacks(playerSelectedPet) {
+  let petAttacks;
+  for (let i = 0; i < mokepons.length; i++) {
+    if (playerSelectedPet === mokepons[i].name) {
+      petAttacks = mokepons[i].attacks;
+    }
+  }
+
+  DisplayAttacks(petAttacks);
+}
+
+function DisplayAttacks(selectedAttacks) {
+  selectedAttacks.forEach((attacks) => {
+    mokeponAttacks = `<button id=${attacks.attackId} class="attack-button">${attacks.attackName}</button>`;
+
+    mokeponAttackContainer.innerHTML += mokeponAttacks;
+  })
+
+  fireBtn = document.getElementById("fire-attack-button");
+  waterBtn = document.getElementById("water-attack-button");
+  dirtBtn = document.getElementById("dirt-attack-button");
+
+  fireBtn.addEventListener("click", FireAttack);
+  waterBtn.addEventListener("click", WaterAttack);
+  dirtBtn.addEventListener("click", DirtAttack);
 }
 
 function RestartGame() {
