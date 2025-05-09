@@ -19,12 +19,16 @@ let dirtBtn;
 let hipodogeInput;
 let capipepoInput;
 let ratigueyaInput;
-let mokepons = [];
-let playerAttack;
-let enemyAttack;
 let mokeponChoice;
 let playerPet;
 let mokeponAttacks;
+let enemyMokeponAttacks;
+let playerAttackIndex;
+let enemyAttackIndex;
+let enemyAttack = [];
+let playerAttack = [];
+let attackButtons = [];
+let mokepons = [];
 let playerLivesCount = 3;
 let enemyLivesCount = 3;
 
@@ -119,55 +123,41 @@ function SelectEnemyPet() {
   let selectedPet = GenerateRandomNumber(0, mokepons.length - 1);
 
   enemyPetSpan.innerHTML = mokepons[selectedPet].name;
-}
+  enemyMokeponAttacks = mokepons[selectedPet].attacks;
 
-function FireAttack() {
-  playerAttack = "FUEGO";
-  RandomEnemyAttack();
-}
-
-function WaterAttack() {
-  playerAttack = "AGUA";
-  RandomEnemyAttack();
-}
-
-function DirtAttack() {
-  playerAttack = "TIERRA";
-  RandomEnemyAttack();
+  AttackSequence();
 }
 
 function RandomEnemyAttack() {
-  let selectedEnemyAttack = GenerateRandomNumber(1, 3);
+  let selectedEnemyAttack = GenerateRandomNumber(0, enemyMokeponAttacks.length - 1);
 
-  if (selectedEnemyAttack === 1) {
-    enemyAttack = "FUEGO";
+  if (selectedEnemyAttack === 0 || selectedEnemyAttack === 1) {
+    enemyAttack.push("FUEGO");
   }
-  else if (selectedEnemyAttack === 2) {
-    enemyAttack = "AGUA";
+  else if (selectedEnemyAttack === 3 || selectedEnemyAttack === 4) {
+    enemyAttack.push("AGUA");
   }
   else {
-    enemyAttack = "TIERRA";
+    enemyAttack.push("TIERRA");
   }
 
-  Combat();
+  StartFight();
 }
 
 function Combat() {
-  if (enemyAttack == playerAttack) {
-    CreateBattleMessage("EMPATE");
-  }
-  else if (playerAttack == "FUEGO" && enemyAttack == "TIERRA" || playerAttack == "AGUA" && enemyAttack == "FUEGO" || playerAttack == "TIERRA" && enemyAttack == "AGUA") {
-    enemyLivesCount--;
-    enemyLives.innerHTML = enemyLivesCount;
-    CreateBattleMessage("GANASTE!");
-  }
-  else {
-    playerLivesCount--;
-    playerLives.innerHTML = playerLivesCount;
-    CreateBattleMessage("PERDISTE!");
+  for(let i = 0; i < playerAttack.length; i++) {
+    if(playerAttack[i] === enemyAttack[i]) {
+      MokeponAttackHandler(i, i);
+      CreateBattleMessage("EMPATE");
+    }
   }
 
   CheckLives();
+}
+
+function MokeponAttackHandler(player, enemy) {
+  playerAttackIndex = enemyAttack[player];
+  enemyAttackIndex = enemyAttack[enemy];
 }
 
 function CheckLives() {
@@ -184,8 +174,8 @@ function CreateBattleMessage(battleResult) {
   let newEnemyBattleMessage = document.createElement("p");
 
   messagesSection.innerHTML = battleResult;
-  newPlayerBattleMessage.innerHTML = playerAttack;
-  newEnemyBattleMessage.innerHTML = enemyAttack;
+  newPlayerBattleMessage.innerHTML = playerAttackIndex;
+  newEnemyBattleMessage.innerHTML = enemyAttackIndex;
 
   playerAttackMessage.appendChild(newPlayerBattleMessage);
   enemyAttackMessage.appendChild(newEnemyBattleMessage);
@@ -214,18 +204,40 @@ function PullAttacks(playerSelectedPet) {
 
 function DisplayAttacks(selectedAttacks) {
   selectedAttacks.forEach((attacks) => {
-    mokeponAttacks = `<button id=${attacks.attackId} class="attack-button">${attacks.attackName}</button>`;
-
+    mokeponAttacks = `<button id=${attacks.attackId} class="attack-button attackBtn">${attacks.attackName}</button>`;
     mokeponAttackContainer.innerHTML += mokeponAttacks;
   })
 
   fireBtn = document.getElementById("fire-attack-button");
   waterBtn = document.getElementById("water-attack-button");
   dirtBtn = document.getElementById("dirt-attack-button");
+  attackButtons = document.querySelectorAll(".attackBtn");
+}
 
-  fireBtn.addEventListener("click", FireAttack);
-  waterBtn.addEventListener("click", WaterAttack);
-  dirtBtn.addEventListener("click", DirtAttack);
+function AttackSequence() {
+  attackButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      if (e.target.textContent === "🔥") {
+        playerAttack.push("FUEGO");
+        button.style.background = "#112F58";
+      }
+      else if (e.target.textContent === "💧") {
+        playerAttack.push("AGUA");
+        button.style.background = "#112F58";
+      }
+      else {
+        playerAttack.push("TIERRA");
+        button.style.background = "#112F58";
+      }
+      RandomEnemyAttack()
+    })
+  })
+}
+
+function StartFight() {
+  if (playerAttack.length === 5) {
+    Combat();
+  }
 }
 
 function RestartGame() {

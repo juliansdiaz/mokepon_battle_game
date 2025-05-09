@@ -116,6 +116,7 @@ input:checked + label {
 }
 
 .player-stats, .enemy-stats {
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
