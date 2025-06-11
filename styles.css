@@ -85,7 +85,7 @@ input:checked + label {
   padding: 10px;
   border-radius: 20px;
   border-color: transparent;
-  width: 100px;
+  width: 80px;
   margin: 10px;
   color: white;
   font-family: "Quicksand", sans-serif;

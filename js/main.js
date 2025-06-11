@@ -29,8 +29,8 @@ let enemyAttack = [];
 let playerAttack = [];
 let attackButtons = [];
 let mokepons = [];
-let playerLivesCount = 3;
-let enemyLivesCount = 3;
+let playerWinsCount = 0;
+let enemyWinsCount = 0;
 
 class Mokepon {
   constructor(name, photo, lives) {
@@ -145,27 +145,54 @@ function RandomEnemyAttack() {
 }
 
 function Combat() {
-  for(let i = 0; i < playerAttack.length; i++) {
-    if(playerAttack[i] === enemyAttack[i]) {
+  for (let i = 0; i < playerAttack.length; i++) {
+    if (playerAttack[i] === enemyAttack[i]) {
       MokeponAttackHandler(i, i);
       CreateBattleMessage("EMPATE");
     }
+    else if (playerAttack[i] === "FUEGO" && enemyAttack[i] === "TIERRA") {
+      MokeponAttackHandler(i, i);
+      CreateBattleMessage("GANASTE!!");
+      playerWinsCount++;
+      playerLives.innerHTML = playerWinsCount;
+    }
+    else if (playerAttack[i] === "AGUA" && enemyAttack[i] === "FUEGO") {
+      MokeponAttackHandler(i, i);
+      CreateBattleMessage("GANASTE!!");
+      playerWinsCount++;
+      playerLives.innerHTML = playerWinsCount;
+    }
+    else if (playerAttack[i] === "TIERRA" && enemyAttack[i] === "AGUA") {
+      MokeponAttackHandler(i, i);
+      CreateBattleMessage("GANASTE!!");
+      playerWinsCount++;
+      playerLives.innerHTML = playerWinsCount;
+    }
+    else {
+      MokeponAttackHandler(i, i);
+      CreateBattleMessage("PERDISTE...");
+      enemyWinsCount++;
+      enemyLives.innerHTML = enemyWinsCount;
+    }
   }
 
-  CheckLives();
+  CheckWinCount();
 }
 
 function MokeponAttackHandler(player, enemy) {
-  playerAttackIndex = enemyAttack[player];
+  playerAttackIndex = playerAttack[player];
   enemyAttackIndex = enemyAttack[enemy];
 }
 
-function CheckLives() {
-  if (enemyLivesCount == 0) {
-    CreateGameOverMessage("JUGADOR GANA!!!");
+function CheckWinCount() {
+  if (playerWinsCount === enemyWinsCount) {
+    CreateGameOverMessage("FIN DEL JUEGO!!! HAY EMPATE!!!");
   }
-  else if (playerLivesCount == 0) {
-    CreateGameOverMessage("ENEMIGO GANA!!!");
+  else if (playerWinsCount > enemyWinsCount) {
+    CreateGameOverMessage("FIN DEL JUEGO!!! JUGADOR GANA!!!");
+  }
+  else {
+    CreateGameOverMessage("FIN DEL JUEGO!!! ENEMIGO GANA!!!");
   }
 }
 
@@ -183,11 +210,6 @@ function CreateBattleMessage(battleResult) {
 
 function CreateGameOverMessage(gameOverResult) {
   messagesSection.innerHTML = gameOverResult;
-
-  fireBtn.disabled = true;
-  waterBtn.disabled = true;
-  dirtBtn.disabled = true
-
   restartSection.style.display = "block";
 }
 
@@ -220,14 +242,17 @@ function AttackSequence() {
       if (e.target.textContent === "🔥") {
         playerAttack.push("FUEGO");
         button.style.background = "#112F58";
+        button.disabled = true;
       }
       else if (e.target.textContent === "💧") {
         playerAttack.push("AGUA");
         button.style.background = "#112F58";
+        button.disabled = true;
       }
       else {
         playerAttack.push("TIERRA");
         button.style.background = "#112F58";
+        button.disabled = true;
       }
       RandomEnemyAttack()
     })
