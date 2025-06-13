@@ -122,6 +122,17 @@ input:checked + label {
   align-items: center;
 }
 
+/*Game map styles*/
+#display-game-map {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-map {
+  border: 2px solid white;
+}
+
 /*Mobile screen styles*/
 @media(max-width: 360px) {
   .cards-container, .attack-buttons {

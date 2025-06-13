@@ -12,6 +12,8 @@ const playerAttackMessage = document.getElementById("player-attack-message");
 const enemyAttackMessage = document.getElementById("enemy-attack-message");
 const mokeponCardsContainer = document.getElementById("mokepon-cards");
 const mokeponAttackContainer = document.getElementById("attacks-container");
+const displayMapSection = document.getElementById("display-game-map");
+const gameMap = document.getElementById("game-map");
 
 let fireBtn;
 let waterBtn;
@@ -31,6 +33,8 @@ let attackButtons = [];
 let mokepons = [];
 let playerWinsCount = 0;
 let enemyWinsCount = 0;
+let mapCanvas = gameMap.getContext("2d");
+let interval;
 
 class Mokepon {
   constructor(name, photo, lives) {
@@ -38,6 +42,14 @@ class Mokepon {
     this.photo = photo;
     this.lives = lives;
     this.attacks = [];
+    this.x = 20;
+    this.y = 30;
+    this.width = 80;
+    this.height = 80;
+    this.mapPhoto = new Image()
+    this.mapPhoto.src = photo; 
+    this.speedX = 0;
+    this.speedY = 0;
   }
 }
 
@@ -92,12 +104,15 @@ function StartGame() {
 
   selectAttackSection.style.display = "none";
   restartSection.style.display = "none";
+  displayMapSection.style.display = "none";
 }
 
 function SelectPlayerPet() {
-  selectAttackSection.style.display = "flex";
+  //selectAttackSection.style.display = "flex";
   selectPetSection.style.display = "none";
-
+  displayMapSection.style.display = "flex";
+  interval = setInterval(DrawCharacter, 50);
+  
   if (hipodogeInput.checked) {
     playerPetSpan.innerHTML = hipodogeInput.id;
     playerPet = hipodogeInput.id;
@@ -271,6 +286,34 @@ function RestartGame() {
 
 function GenerateRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function DrawCharacter() {
+  capipepo.x = capipepo.x + capipepo.speedX;
+  capipepo.y = capipepo.y + capipepo.speedY;
+  mapCanvas.clearRect(0, 0, gameMap.width, gameMap.height);
+  mapCanvas.drawImage(capipepo.mapPhoto, capipepo.x, capipepo.y, capipepo.width, capipepo.height);
+}
+
+function MoveMokeponRight() {
+  capipepo.speedX = 5;
+}
+
+function MoveMokeponLeft() {
+  capipepo.speedX = -5;
+}
+
+function MoveMokeponDown() {
+  capipepo.speedY = 5;
+}
+
+function MoveMokeponUp() {
+  capipepo.speedY = -5;
+}
+
+function StopMovement() {
+  capipepo.speedX = 0;
+  capipepo.speedY = 0;
 }
 
 window.addEventListener("load", StartGame);

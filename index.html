@@ -20,6 +20,15 @@
     <button id="select-button">Seleccionar</button>
   </section>
 
+  <section id="display-game-map">
+    <h2 class="mokepon_subtitle">Recorre el mapa con tu mascota!</h2>
+    <canvas id="game-map"></canvas>
+    <button onmouseup="StopMovement()" onmousedown="MoveMokeponUp()">Arriba</button>
+    <button onmouseup="StopMovement()" onmousedown="MoveMokeponLeft()">Izquierda</button>
+    <button onmouseup="StopMovement()" onmousedown="MoveMokeponDown()">Abajo</button>
+    <button onmouseup="StopMovement()" onmousedown="MoveMokeponRight()">Derecha</button>
+  </section>
+
   <section id="select-attack">
     <h1 class="mokepon_title">MOKEPON! 🔥💧🌱</h1>
 
