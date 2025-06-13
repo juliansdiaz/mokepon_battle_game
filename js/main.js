@@ -23,6 +23,7 @@ let capipepoInput;
 let ratigueyaInput;
 let mokeponChoice;
 let playerPet;
+let playerPetObj;
 let mokeponAttacks;
 let enemyMokeponAttacks;
 let playerAttackIndex;
@@ -34,6 +35,8 @@ let mokepons = [];
 let playerWinsCount = 0;
 let enemyWinsCount = 0;
 let mapCanvas = gameMap.getContext("2d");
+let gameMapBackground = new Image()
+gameMapBackground.src = "./img/mokemap.png";
 let interval;
 
 class Mokepon {
@@ -47,7 +50,7 @@ class Mokepon {
     this.width = 80;
     this.height = 80;
     this.mapPhoto = new Image()
-    this.mapPhoto.src = photo; 
+    this.mapPhoto.src = photo;
     this.speedX = 0;
     this.speedY = 0;
   }
@@ -110,9 +113,7 @@ function StartGame() {
 function SelectPlayerPet() {
   //selectAttackSection.style.display = "flex";
   selectPetSection.style.display = "none";
-  displayMapSection.style.display = "flex";
-  interval = setInterval(DrawCharacter, 50);
-  
+
   if (hipodogeInput.checked) {
     playerPetSpan.innerHTML = hipodogeInput.id;
     playerPet = hipodogeInput.id;
@@ -131,6 +132,8 @@ function SelectPlayerPet() {
   }
 
   PullAttacks(playerPet);
+  displayMapSection.style.display = "flex";
+  DisplayMap();
   SelectEnemyPet();
 }
 
@@ -288,32 +291,70 @@ function GenerateRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function DrawCharacter() {
-  capipepo.x = capipepo.x + capipepo.speedX;
-  capipepo.y = capipepo.y + capipepo.speedY;
+function DrawCanvas() {
+  playerPetObj.x = playerPetObj.x + playerPetObj.speedX;
+  playerPetObj.y = playerPetObj.y + playerPetObj.speedY;
   mapCanvas.clearRect(0, 0, gameMap.width, gameMap.height);
-  mapCanvas.drawImage(capipepo.mapPhoto, capipepo.x, capipepo.y, capipepo.width, capipepo.height);
+  mapCanvas.drawImage(gameMapBackground, 0, 0, gameMap.width, gameMap.height);
+  mapCanvas.drawImage(playerPetObj.mapPhoto, playerPetObj.x, playerPetObj.y, playerPetObj.width, playerPetObj.height);
 }
 
 function MoveMokeponRight() {
-  capipepo.speedX = 5;
+  playerPetObj.speedX = 5;
 }
 
 function MoveMokeponLeft() {
-  capipepo.speedX = -5;
+  playerPetObj.speedX = -5;
 }
 
 function MoveMokeponDown() {
-  capipepo.speedY = 5;
+  playerPetObj.speedY = 5;
 }
 
 function MoveMokeponUp() {
-  capipepo.speedY = -5;
+  playerPetObj.speedY = -5;
 }
 
 function StopMovement() {
-  capipepo.speedX = 0;
-  capipepo.speedY = 0;
+  playerPetObj.speedX = 0;
+  playerPetObj.speedY = 0;
+}
+
+function KeyPressed(event) {
+  switch (event.key) {
+    case "ArrowUp":
+      MoveMokeponUp();
+      break;
+    case "ArrowDown":
+      MoveMokeponDown();
+      break;
+    case "ArrowLeft":
+      MoveMokeponLeft();
+      break;
+    case "ArrowRight":
+      MoveMokeponRight();
+      break;
+    default:
+      break;
+  }
+}
+
+function DisplayMap() {
+  gameMap.width = 320;
+  gameMap.height = 240;
+  playerPetObj = PullSelectedPet(playerPet);
+  interval = setInterval(DrawCanvas, 50);
+
+  window.addEventListener("keydown", KeyPressed);
+  window.addEventListener("keyup", StopMovement);
+}
+
+function PullSelectedPet() {
+  for (let i = 0; i < mokepons.length; i++) {
+    if (playerPet === mokepons[i].name) {
+      return mokepons[i];
+    }
+  }
 }
 
 window.addEventListener("load", StartGame);
