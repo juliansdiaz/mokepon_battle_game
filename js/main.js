@@ -40,25 +40,32 @@ gameMapBackground.src = "./img/mokemap.png";
 let interval;
 
 class Mokepon {
-  constructor(name, photo, lives) {
+  constructor(name, photo, lives, photoMap, x = 10, y = 10) {
     this.name = name;
     this.photo = photo;
     this.lives = lives;
     this.attacks = [];
-    this.x = 20;
-    this.y = 30;
-    this.width = 80;
-    this.height = 80;
+    this.x = x;
+    this.y = y;
+    this.width = 35;
+    this.height = 35;
     this.mapPhoto = new Image()
-    this.mapPhoto.src = photo;
+    this.mapPhoto.src = photoMap;
     this.speedX = 0;
     this.speedY = 0;
   }
+
+  DrawMokepon() {
+    mapCanvas.drawImage(this.mapPhoto, this.x, this.y, this.width, this.height);
+  }
 }
 
-let hipodoge = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5);
-let capipepo = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5);
-let ratigueya = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5);
+let hipodoge = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
+let capipepo = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
+let ratigueya = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
+let hipodogeEnemy = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png", 80, 120);
+let capipepoEnemy = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png", 150, 95);
+let ratigueyaEnemy = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png", 200, 190);
 
 hipodoge.attacks.push(
   { attackName: "💧", attackId: "water-attack-button" },
@@ -296,7 +303,17 @@ function DrawCanvas() {
   playerPetObj.y = playerPetObj.y + playerPetObj.speedY;
   mapCanvas.clearRect(0, 0, gameMap.width, gameMap.height);
   mapCanvas.drawImage(gameMapBackground, 0, 0, gameMap.width, gameMap.height);
-  mapCanvas.drawImage(playerPetObj.mapPhoto, playerPetObj.x, playerPetObj.y, playerPetObj.width, playerPetObj.height);
+  
+  playerPetObj.DrawMokepon();
+  hipodogeEnemy.DrawMokepon();
+  capipepoEnemy.DrawMokepon();
+  ratigueyaEnemy.DrawMokepon();
+
+  if(playerPetObj.speedX !== 0 || playerPetObj.speedY !== 0) {
+    CheckCollision(hipodogeEnemy);
+    CheckCollision(capipepoEnemy);
+    CheckCollision(ratigueyaEnemy);
+  }
 }
 
 function MoveMokeponRight() {
@@ -354,6 +371,26 @@ function PullSelectedPet() {
     if (playerPet === mokepons[i].name) {
       return mokepons[i];
     }
+  }
+}
+
+function CheckCollision(enemyPet) {
+  const enemyPetUp = enemyPet.y;
+  const enemyPetDown = enemyPet.y + enemyPet.height;
+  const enemyPetRight = enemyPet.x + enemyPet.width;
+  const enemyPetLeft = enemyPet.x;
+
+  const playerPetUp = playerPetObj.y;
+  const playerPetDown = playerPetObj.y + playerPetObj.height;
+  const playerPetRight = playerPetObj.x + playerPetObj.width;
+  const playerPetLeft = playerPetObj.x;
+
+  if ((playerPetDown < enemyPetUp) || (playerPetUp > enemyPetDown) || (playerPetRight < enemyPetLeft) || (playerPetLeft > enemyPetRight)) {
+    return;
+  }
+  else {
+    alert("Hay Colision con " + enemyPet.name);
+    StopMovement();
   }
 }
 
