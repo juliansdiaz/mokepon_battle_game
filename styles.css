@@ -129,13 +129,29 @@ input:checked + label {
   justify-content: center;
 }
 
-#game-map {
+#display-game-map button {
+  color: white;
+  background: transparent;
+  font-family: "Quicksand", sans-serif;
+  width: 80px;
+  height: 40px;
+  padding: 5px;
+  margin: 5px;
   border: 2px solid white;
+  border-radius: 10px;
 }
 
 /*Mobile screen styles*/
-@media(max-width: 360px) {
+@media(max-width: 560px) {
   .cards-container, .attack-buttons {
     flex-direction: column;
+  }
+}
+
+@media(max-width: 300px) {
+  #display-game-map div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }

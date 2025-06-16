@@ -38,17 +38,29 @@ let mapCanvas = gameMap.getContext("2d");
 let gameMapBackground = new Image()
 gameMapBackground.src = "./img/mokemap.png";
 let interval;
+let desiredHeight;
+let gameMapWidth = window.innerWidth - 20;
+const gameMapMaxWidth = 700;
+
+//Set game map size
+if (gameMapWidth > gameMapMaxWidth) {
+  gameMapWidth = gameMapMaxWidth - 20;
+}
+
+desiredHeight = gameMapWidth * 600 / 800;
+gameMap.width = gameMapWidth;
+gameMap.height = desiredHeight;
 
 class Mokepon {
-  constructor(name, photo, lives, photoMap, x = 10, y = 10) {
+  constructor(name, photo, lives, photoMap) {
     this.name = name;
     this.photo = photo;
     this.lives = lives;
     this.attacks = [];
-    this.x = x;
-    this.y = y;
-    this.width = 35;
-    this.height = 35;
+    this.width = 50;
+    this.height = 50;
+    this.x = GenerateRandomNumber(0, gameMap.width - this.width);
+    this.y = GenerateRandomNumber(0, gameMap.height - this.height);
     this.mapPhoto = new Image()
     this.mapPhoto.src = photoMap;
     this.speedX = 0;
@@ -63,11 +75,19 @@ class Mokepon {
 let hipodoge = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
 let capipepo = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
 let ratigueya = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
-let hipodogeEnemy = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png", 80, 120);
-let capipepoEnemy = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png", 150, 95);
-let ratigueyaEnemy = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png", 200, 190);
+let hipodogeEnemy = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
+let capipepoEnemy = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
+let ratigueyaEnemy = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
 
 hipodoge.attacks.push(
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" }
+);
+
+hipodogeEnemy.attacks.push(
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "💧", attackId: "water-attack-button" },
@@ -83,7 +103,23 @@ capipepo.attacks.push(
   { attackName: "🔥", attackId: "fire-attack-button" }
 );
 
+capipepoEnemy.attacks.push(
+  { attackName: "🌱", attackId: "dirt-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" }
+);
+
 ratigueya.attacks.push(
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "🔥", attackId: "fire-attack-button" },
+  { attackName: "💧", attackId: "water-attack-button" },
+  { attackName: "🌱", attackId: "dirt-attack-button" }
+);
+
+ratigueyaEnemy.attacks.push(
   { attackName: "🔥", attackId: "fire-attack-button" },
   { attackName: "🔥", attackId: "fire-attack-button" },
   { attackName: "🔥", attackId: "fire-attack-button" },
@@ -118,7 +154,6 @@ function StartGame() {
 }
 
 function SelectPlayerPet() {
-  //selectAttackSection.style.display = "flex";
   selectPetSection.style.display = "none";
 
   if (hipodogeInput.checked) {
@@ -141,14 +176,11 @@ function SelectPlayerPet() {
   PullAttacks(playerPet);
   displayMapSection.style.display = "flex";
   DisplayMap();
-  SelectEnemyPet();
 }
 
-function SelectEnemyPet() {
-  let selectedPet = GenerateRandomNumber(0, mokepons.length - 1);
-
-  enemyPetSpan.innerHTML = mokepons[selectedPet].name;
-  enemyMokeponAttacks = mokepons[selectedPet].attacks;
+function SelectEnemyPet(enemy) {
+  enemyPetSpan.innerHTML = enemy.name;
+  enemyMokeponAttacks = enemy.attacks;
 
   AttackSequence();
 }
@@ -303,13 +335,13 @@ function DrawCanvas() {
   playerPetObj.y = playerPetObj.y + playerPetObj.speedY;
   mapCanvas.clearRect(0, 0, gameMap.width, gameMap.height);
   mapCanvas.drawImage(gameMapBackground, 0, 0, gameMap.width, gameMap.height);
-  
+
   playerPetObj.DrawMokepon();
   hipodogeEnemy.DrawMokepon();
   capipepoEnemy.DrawMokepon();
   ratigueyaEnemy.DrawMokepon();
 
-  if(playerPetObj.speedX !== 0 || playerPetObj.speedY !== 0) {
+  if (playerPetObj.speedX !== 0 || playerPetObj.speedY !== 0) {
     CheckCollision(hipodogeEnemy);
     CheckCollision(capipepoEnemy);
     CheckCollision(ratigueyaEnemy);
@@ -357,8 +389,6 @@ function KeyPressed(event) {
 }
 
 function DisplayMap() {
-  gameMap.width = 320;
-  gameMap.height = 240;
   playerPetObj = PullSelectedPet(playerPet);
   interval = setInterval(DrawCanvas, 50);
 
@@ -389,8 +419,11 @@ function CheckCollision(enemyPet) {
     return;
   }
   else {
-    alert("Hay Colision con " + enemyPet.name);
     StopMovement();
+    clearInterval(interval);
+    selectAttackSection.style.display = "flex";
+    displayMapSection.style.display = "none";
+    SelectEnemyPet(enemyPet);
   }
 }
 
