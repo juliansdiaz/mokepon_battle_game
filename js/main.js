@@ -151,6 +151,19 @@ function StartGame() {
   selectAttackSection.style.display = "none";
   restartSection.style.display = "none";
   displayMapSection.style.display = "none";
+
+  JoinGame();
+}
+
+function JoinGame() {
+  fetch("http://localhost:8080/join").then(function(res){
+    console.log(res);
+    if(res.ok) {
+      res.text().then(function (response) {
+        console.log(response);
+      })
+    }
+  });
 }
 
 function SelectPlayerPet() {
