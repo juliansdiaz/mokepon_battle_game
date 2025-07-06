@@ -15,6 +15,7 @@ const mokeponAttackContainer = document.getElementById("attacks-container");
 const displayMapSection = document.getElementById("display-game-map");
 const gameMap = document.getElementById("game-map");
 
+let playerId = null;
 let fireBtn;
 let waterBtn;
 let dirtBtn;
@@ -157,10 +158,9 @@ function StartGame() {
 
 function JoinGame() {
   fetch("http://localhost:8080/join").then(function(res){
-    console.log(res);
     if(res.ok) {
       res.text().then(function (response) {
-        console.log(response);
+        playerId = response;
       })
     }
   });
@@ -186,9 +186,23 @@ function SelectPlayerPet() {
     RestartGame();
   }
 
+  SelectMokepon(playerPet);
+
   PullAttacks(playerPet);
   displayMapSection.style.display = "flex";
   DisplayMap();
+}
+
+function SelectMokepon(playerPet) {
+  fetch(`http://localhost:8080/mokepon/${playerId}`, {
+    method: "post",
+    headers: {
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      mokepon: playerPet
+    })
+  });
 }
 
 function SelectEnemyPet(enemy) {
