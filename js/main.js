@@ -53,7 +53,8 @@ gameMap.width = gameMapWidth;
 gameMap.height = desiredHeight;
 
 class Mokepon {
-  constructor(name, photo, lives, photoMap) {
+  constructor(name, photo, lives, photoMap, id = null) {
+    this.id = id;
     this.name = name;
     this.photo = photo;
     this.lives = lives;
@@ -76,57 +77,34 @@ class Mokepon {
 let hipodoge = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
 let capipepo = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
 let ratigueya = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
-let hipodogeEnemy = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
-let capipepoEnemy = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
-let ratigueyaEnemy = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
 
-hipodoge.attacks.push(
+const hipodogeAttacks = [
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "🔥", attackId: "fire-attack-button" },
   { attackName: "🌱", attackId: "dirt-attack-button" }
-);
+]
 
-hipodogeEnemy.attacks.push(
-  { attackName: "💧", attackId: "water-attack-button" },
-  { attackName: "💧", attackId: "water-attack-button" },
-  { attackName: "💧", attackId: "water-attack-button" },
-  { attackName: "🔥", attackId: "fire-attack-button" },
-  { attackName: "🌱", attackId: "dirt-attack-button" }
-);
-
-capipepo.attacks.push(
+const capipepoAttacks = [
   { attackName: "🌱", attackId: "dirt-attack-button" },
   { attackName: "🌱", attackId: "dirt-attack-button" },
   { attackName: "🌱", attackId: "dirt-attack-button" },
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "🔥", attackId: "fire-attack-button" }
-);
+]
 
-capipepoEnemy.attacks.push(
-  { attackName: "🌱", attackId: "dirt-attack-button" },
-  { attackName: "🌱", attackId: "dirt-attack-button" },
-  { attackName: "🌱", attackId: "dirt-attack-button" },
-  { attackName: "💧", attackId: "water-attack-button" },
-  { attackName: "🔥", attackId: "fire-attack-button" }
-);
-
-ratigueya.attacks.push(
+const ratigueyaAttacks = [
   { attackName: "🔥", attackId: "fire-attack-button" },
   { attackName: "🔥", attackId: "fire-attack-button" },
   { attackName: "🔥", attackId: "fire-attack-button" },
   { attackName: "💧", attackId: "water-attack-button" },
   { attackName: "🌱", attackId: "dirt-attack-button" }
-);
+]
 
-ratigueyaEnemy.attacks.push(
-  { attackName: "🔥", attackId: "fire-attack-button" },
-  { attackName: "🔥", attackId: "fire-attack-button" },
-  { attackName: "🔥", attackId: "fire-attack-button" },
-  { attackName: "💧", attackId: "water-attack-button" },
-  { attackName: "🌱", attackId: "dirt-attack-button" }
-);
+hipodoge.attacks.push(...hipodogeAttacks);
+capipepo.attacks.push(...capipepoAttacks);
+ratigueya.attacks.push(...ratigueyaAttacks);
 
 mokepons.push(hipodoge, capipepo, ratigueya);
 
@@ -157,8 +135,8 @@ function StartGame() {
 }
 
 function JoinGame() {
-  fetch("http://localhost:8080/join").then(function(res){
-    if(res.ok) {
+  fetch("http://localhost:8080/join").then(function (res) {
+    if (res.ok) {
       res.text().then(function (response) {
         playerId = response;
       })
@@ -197,7 +175,7 @@ function SelectMokepon(playerPet) {
   fetch(`http://localhost:8080/mokepon/${playerId}`, {
     method: "post",
     headers: {
-      "Content-Type":"application/json"
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({
       mokepon: playerPet
@@ -365,25 +343,41 @@ function DrawCanvas() {
 
   playerPetObj.DrawMokepon();
   SendPlayerPosition(playerPetObj.x, playerPetObj.y);
-  hipodogeEnemy.DrawMokepon();
-  capipepoEnemy.DrawMokepon();
-  ratigueyaEnemy.DrawMokepon();
-
-  if (playerPetObj.speedX !== 0 || playerPetObj.speedY !== 0) {
-    CheckCollision(hipodogeEnemy);
-    CheckCollision(capipepoEnemy);
-    CheckCollision(ratigueyaEnemy);
-  }
 }
 
 function SendPlayerPosition(x, y) {
   fetch(`http://localhost:8080/mokepon/${playerId}/position`, {
     method: "post",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       x,
       y
     })
+  }).then(function (res) {
+    if (res.ok) {
+      res.json().then(function ({ enemies }) {
+        enemies.forEach(function (enemy) {
+          if (enemy.mokepon !== undefined) {
+            let enemyMokepon = null;
+            const mokeponName = enemy.mokepon.name || "";
+            if (mokeponName === "Hipodoge") {
+              enemyMokepon = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
+            }
+            else if (mokeponName === "Capipepo") {
+              enemyMokepon = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
+            }
+            else if (mokeponName === "Ratigueya") {
+              enemyMokepon = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
+            }
+
+            enemyMokepon.x = enemy.x;
+            enemyMokepon.y = enemy.y;
+
+            enemyMokepon.DrawMokepon();
+          }
+        })
+      })
+    }
   });
 }
 
