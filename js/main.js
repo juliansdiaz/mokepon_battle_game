@@ -33,6 +33,7 @@ let enemyAttack = [];
 let playerAttack = [];
 let attackButtons = [];
 let mokepons = [];
+let enemyMokepons = [];
 let playerWinsCount = 0;
 let enemyWinsCount = 0;
 let mapCanvas = gameMap.getContext("2d");
@@ -343,6 +344,12 @@ function DrawCanvas() {
 
   playerPetObj.DrawMokepon();
   SendPlayerPosition(playerPetObj.x, playerPetObj.y);
+
+  enemyMokepons.forEach(function (mokepon) {
+    if(mokepon !== undefined) {
+      mokepon.DrawMokepon();
+    }
+  })
 }
 
 function SendPlayerPosition(x, y) {
@@ -354,9 +361,8 @@ function SendPlayerPosition(x, y) {
       y
     })
   }).then(function (res) {
-    if (res.ok) {
       res.json().then(function ({ enemies }) {
-        enemies.forEach(function (enemy) {
+        enemyMokepons = enemies.map(function (enemy) {
           if (enemy.mokepon !== undefined) {
             let enemyMokepon = null;
             const mokeponName = enemy.mokepon.name || "";
@@ -373,11 +379,10 @@ function SendPlayerPosition(x, y) {
             enemyMokepon.x = enemy.x;
             enemyMokepon.y = enemy.y;
 
-            enemyMokepon.DrawMokepon();
+            return enemyMokepon;
           }
         })
       })
-    }
   });
 }
 
