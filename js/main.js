@@ -364,6 +364,7 @@ function DrawCanvas() {
   mapCanvas.drawImage(gameMapBackground, 0, 0, gameMap.width, gameMap.height);
 
   playerPetObj.DrawMokepon();
+  SendPlayerPosition(playerPetObj.x, playerPetObj.y);
   hipodogeEnemy.DrawMokepon();
   capipepoEnemy.DrawMokepon();
   ratigueyaEnemy.DrawMokepon();
@@ -373,6 +374,17 @@ function DrawCanvas() {
     CheckCollision(capipepoEnemy);
     CheckCollision(ratigueyaEnemy);
   }
+}
+
+function SendPlayerPosition(x, y) {
+  fetch(`http://localhost:8080/mokepon/${playerId}/position`, {
+    method: "post",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      x,
+      y
+    })
+  });
 }
 
 function MoveMokeponRight() {
