@@ -16,6 +16,7 @@ const displayMapSection = document.getElementById("display-game-map");
 const gameMap = document.getElementById("game-map");
 
 let playerId = null;
+let enemyId = null;
 let fireBtn;
 let waterBtn;
 let dirtBtn;
@@ -317,9 +318,23 @@ function AttackSequence() {
         button.style.background = "#112F58";
         button.disabled = true;
       }
-      RandomEnemyAttack()
+      //RandomEnemyAttack()
+      if (playerAttack.length === 5) {
+        SendAttacks();
+      }
+
     })
   })
+}
+
+function SendAttacks() {
+  fetch(`http://localhost:8080/mokepon/${playerId}/attacks`, {
+    method: "post",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      attacks: playerAttack
+    })
+  });
 }
 
 function StartFight() {
@@ -346,8 +361,9 @@ function DrawCanvas() {
   SendPlayerPosition(playerPetObj.x, playerPetObj.y);
 
   enemyMokepons.forEach(function (mokepon) {
-    if(mokepon !== undefined) {
+    if (mokepon !== undefined) {
       mokepon.DrawMokepon();
+      CheckCollision(mokepon);
     }
   })
 }
@@ -361,28 +377,28 @@ function SendPlayerPosition(x, y) {
       y
     })
   }).then(function (res) {
-      res.json().then(function ({ enemies }) {
-        enemyMokepons = enemies.map(function (enemy) {
-          if (enemy.mokepon !== undefined) {
-            let enemyMokepon = null;
-            const mokeponName = enemy.mokepon.name || "";
-            if (mokeponName === "Hipodoge") {
-              enemyMokepon = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png");
-            }
-            else if (mokeponName === "Capipepo") {
-              enemyMokepon = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png");
-            }
-            else if (mokeponName === "Ratigueya") {
-              enemyMokepon = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png");
-            }
-
-            enemyMokepon.x = enemy.x;
-            enemyMokepon.y = enemy.y;
-
-            return enemyMokepon;
+    res.json().then(function ({ enemies }) {
+      enemyMokepons = enemies.map(function (enemy) {
+        if (enemy.mokepon !== undefined) {
+          let enemyMokepon = null;
+          const mokeponName = enemy.mokepon.name || "";
+          if (mokeponName === "Hipodoge") {
+            enemyMokepon = new Mokepon("Hipodoge", "./img/mokepons_mokepon_hipodoge_attack.png", 5, "./img/hipodoge.png", enemy.id);
           }
-        })
+          else if (mokeponName === "Capipepo") {
+            enemyMokepon = new Mokepon("Capipepo", "./img/mokepons_mokepon_capipepo_attack.png", 5, "./img/capipepo.png", enemy.id);
+          }
+          else if (mokeponName === "Ratigueya") {
+            enemyMokepon = new Mokepon("Ratigueya", "./img/mokepons_mokepon_ratigueya_attack.png", 5, "./img/ratigueya.png", enemy.id);
+          }
+
+          enemyMokepon.x = enemy.x;
+          enemyMokepon.y = enemy.y;
+
+          return enemyMokepon;
+        }
       })
+    })
   });
 }
 
@@ -459,6 +475,7 @@ function CheckCollision(enemyPet) {
   else {
     StopMovement();
     clearInterval(interval);
+    enemyId = enemyPet.id;
     selectAttackSection.style.display = "flex";
     displayMapSection.style.display = "none";
     SelectEnemyPet(enemyPet);
