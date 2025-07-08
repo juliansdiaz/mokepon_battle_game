@@ -84,6 +84,14 @@ application.post("/mokepon/:playerId/attacks", (req, res) => {
   res.end();
 });
 
+application.get("/mokepon/:playerId/attacks", (req, res) => {
+  const playerId = req.params.playerId || "";
+  const player = players.find((player) => player.id === playerId);
+  res.send({
+    attacks: player.attacks || []
+  })
+})
+
 //Start server
 application.listen(8080, () => {
   console.log("Servidor funcionando");

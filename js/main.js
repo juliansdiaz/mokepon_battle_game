@@ -209,6 +209,8 @@ function RandomEnemyAttack() {
 }
 
 function Combat() {
+  clearInterval(interval);
+
   for (let i = 0; i < playerAttack.length; i++) {
     if (playerAttack[i] === enemyAttack[i]) {
       MokeponAttackHandler(i, i);
@@ -334,6 +336,20 @@ function SendAttacks() {
     body: JSON.stringify({
       attacks: playerAttack
     })
+  });
+  interval = setInterval(GetAttacks, 50);
+}
+
+function GetAttacks() {
+  fetch(`http://localhost:8080/mokepon/${enemyId}/attacks`).then(function(res) {
+    if(res.ok) {
+      res.json().then(function({attacks}) {
+        if(attacks.length === 5) {
+          enemyAttack = attacks;
+          Combat();
+        }
+      })
+    }
   });
 }
 
